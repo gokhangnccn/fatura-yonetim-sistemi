@@ -10,4 +10,8 @@ public class FaturaYonetimSistemiApplication {
 		SpringApplication.run(FaturaYonetimSistemiApplication.class, args);
 	}
 
+
+
+
+
 }
