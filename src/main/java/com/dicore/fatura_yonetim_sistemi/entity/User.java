@@ -1,24 +1,38 @@
 package com.dicore.fatura_yonetim_sistemi.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-import java.time.LocalDateTime;
 
 @Entity
-@Table
+@Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "user_seq",
+            sequenceName = "user_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_seq"
+    )
     private Long id;
-
+    @NotBlank(message = "Name cannot be empty")
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = false, unique = true, length = 150)
+    @NotBlank(message = "Email cannot be empty")
+    @Email(message = "Email should be valid and contain '@'")
+    @Size(max = 150, message = "Email cannot exceed 150 characters")
+    @Column(unique = true)
     private String email;
 
     @Column(nullable = false, length = 100)
+    @NotBlank(message = "Password cannot be empty!")
     private String password;
 
     @Column
