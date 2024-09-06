@@ -1,8 +1,13 @@
 package com.dicore.fatura_yonetim_sistemi.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.ColumnTransformer;
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Entity
 @Table
 public class Invoice {
@@ -23,44 +28,4 @@ public class Invoice {
     @JoinColumn(name = "bill_id", nullable = false)
     private Bill bill;
 
-    public Invoice() {
-    }
-
-    public Invoice(String filePath, Bill bill) {
-        this.filePath = filePath;
-        this.bill = bill;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    public Bill getBill() {
-        return bill;
-    }
-
-    public void setBill(Bill bill) {
-        this.bill = bill;
-    }
-
-    @Override
-    public String toString() {
-        return "Invoice{" +
-                "Id=" + id +
-                ", filePath='" + filePath + '\'' +
-                ", bill=" + bill +
-                '}';
-    }
 }

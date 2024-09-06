@@ -1,9 +1,13 @@
 package com.dicore.fatura_yonetim_sistemi.service;
 
+import com.dicore.fatura_yonetim_sistemi.dtos.UserDTO;
 import com.dicore.fatura_yonetim_sistemi.entity.User;
+import com.dicore.fatura_yonetim_sistemi.exception.CustomException;
+import com.dicore.fatura_yonetim_sistemi.mapper.UserMapper;
 import com.dicore.fatura_yonetim_sistemi.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,48 +28,30 @@ public class UserService {
 
     public void addNewUser(User user){
         Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
-        if(optionalUser.isPresent()){
-            throw new IllegalStateException("email already taken!");
+        if (optionalUser.isPresent()) {
+            throw new CustomException("Email already taken!", HttpStatus.CONFLICT);
         }
         userRepository.save(user);
     }
 
-    public void deleteUser(Long userId){
+    public void deleteUser(Long userId) {
         boolean exists = userRepository.existsById(userId);
-        if(!exists){
-            throw new IllegalStateException("User with id: " + userId + " does not exists.");
+        if (!exists) {
+            throw new CustomException("User with id: " + userId + " does not exist.", HttpStatus.NOT_FOUND);
         }
         userRepository.deleteById(userId);
     }
 
     @Transactional
-    public void updateUser(Long userId, String name, String email, String phoneNumber, String address){
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException(
-                "User with id " + userId + " does not exists!"
-        ));
+    public void updateUser(Long userId, UserDTO userDTO) {
+        Optional<User> optionalUser = userRepository.findById(userId);
 
-        if (name != null && name.length() > 0 && !name.equals(user.getName())) {
-            user.setName(name);
-        }
-
-        if (email != null && email.length() > 0 && !email.equals(user.getEmail())) {
-            Optional<User> userOptional = userRepository.findByEmail(email);
-            if (userOptional.isPresent()) {
-                throw new IllegalStateException("Email is already taken!");
-            }
-            user.setEmail(email);
-        }
-
-        if (phoneNumber != null && phoneNumber.length() > 0 && !phoneNumber.equals(user.getPhoneNumber())) {
-            user.setPhoneNumber(phoneNumber);
-        }
-
-        if (address != null && address.length() > 0 && !address.equals(user.getAddress())) {
-            user.setAddress(address);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            UserMapper.toEntity(userDTO, user);
+            userRepository.save(user);
+        } else {
+            throw new CustomException("User with id: " + userId + " does not exist.", HttpStatus.NOT_FOUND);
         }
     }
-
-
-
-
 }
