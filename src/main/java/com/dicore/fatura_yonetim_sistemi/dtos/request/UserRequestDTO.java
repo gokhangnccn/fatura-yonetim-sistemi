@@ -1,4 +1,4 @@
-package com.dicore.fatura_yonetim_sistemi.dtos;
+package com.dicore.fatura_yonetim_sistemi.dtos.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDTO {
+public class UserRequestDTO {
 
     @NotBlank(message = "Name cannot be empty")
     @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
@@ -19,7 +19,7 @@ public class UserDTO {
     private String email;
 
     @NotBlank(message = "Password cannot be empty")
-    @Size(min = 6, message = "Password must be at least 6 characters long")
+    @Size(min = 6, max = 100, message = "Password must be at least 6 characters long")
     private String password;
 
     @NotBlank(message = "Phone number cannot be empty")

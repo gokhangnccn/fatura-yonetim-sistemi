@@ -18,7 +18,7 @@ public class Bill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
@@ -26,7 +26,6 @@ public class Bill {
     @Column(nullable = false)
     private LocalDate dueDate;
 
-    @Column
     private LocalDate paidDate;
 
     @Enumerated(EnumType.STRING)

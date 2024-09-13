@@ -4,6 +4,8 @@ import com.dicore.fatura_yonetim_sistemi.enums.ServiceType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,9 +17,9 @@ public class ServiceProvider {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -26,4 +28,7 @@ public class ServiceProvider {
 
     @Column
     private String contactInfo;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal unitPrice;
 }

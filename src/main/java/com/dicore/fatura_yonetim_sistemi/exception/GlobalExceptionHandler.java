@@ -2,43 +2,56 @@ package com.dicore.fatura_yonetim_sistemi.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    HttpStatus badRequest = HttpStatus.BAD_REQUEST;
-
-
-    //validation
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiException> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        String errorMessage = ex.getBindingResult()
-                .getFieldError()
-                .getDefaultMessage();
-
-        ApiException apiException = new ApiException(
-                errorMessage,
-                badRequest,
-                ZonedDateTime.now(ZoneId.of("Z"))
-        );
-
-        return new ResponseEntity<>(apiException, badRequest);
-    }
-
-    //custom
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ApiException> handleCustomException(CustomException ex) {
+    // Handle EntityNotFoundException
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiException> handleEntityNotFoundException(EntityNotFoundException ex) {
         ApiException apiException = new ApiException(
                 ex.getMessage(),
                 ex.getStatus(),
-                ZonedDateTime.now(ZoneId.of("Z"))
+                ZonedDateTime.now()
         );
         return new ResponseEntity<>(apiException, ex.getStatus());
+    }
+
+    // Handle InvalidPaymentException
+    @ExceptionHandler(InvalidPaymentException.class)
+    public ResponseEntity<ApiException> handleInvalidPaymentException(InvalidPaymentException ex) {
+        ApiException apiException = new ApiException(
+                ex.getMessage(),
+                ex.getStatus(),
+                ZonedDateTime.now()
+        );
+        return new ResponseEntity<>(apiException, ex.getStatus());
+    }
+
+    // Handle EntityAlreadyExistsException
+    @ExceptionHandler(EntityAlreadyExistsException.class)
+    public ResponseEntity<ApiException> handleEntityAlreadyExistsException(EntityAlreadyExistsException ex) {
+        ApiException apiException = new ApiException(
+                ex.getMessage(),
+                ex.getStatus(),
+                ZonedDateTime.now()
+        );
+        return new ResponseEntity<>(apiException, ex.getStatus());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiException> handleGeneralException(Exception ex) {
+        ApiException apiException = new ApiException(
+                "An unexpected error occurred.",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+        return new ResponseEntity<>(apiException, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.dicore.fatura_yonetim_sistemi.enums;
 
 public enum BillingUnit {
-    KWH,
+    kWh,
     CUBIC_METER,
     GB
 }

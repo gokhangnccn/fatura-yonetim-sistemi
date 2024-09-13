@@ -1,8 +1,7 @@
 package com.dicore.fatura_yonetim_sistemi.controller;
 
-import com.dicore.fatura_yonetim_sistemi.dtos.UserDTO;
-import com.dicore.fatura_yonetim_sistemi.entity.User;
-import com.dicore.fatura_yonetim_sistemi.exception.CustomException;
+import com.dicore.fatura_yonetim_sistemi.dtos.request.UserRequestDTO;
+import com.dicore.fatura_yonetim_sistemi.dtos.response.UserResponseDTO;
 import com.dicore.fatura_yonetim_sistemi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("/api/users")
 @Tag(name = "Kullanıcı Yönetimi")
 public class UserController {
 
@@ -28,44 +27,39 @@ public class UserController {
 
     @Operation(summary = "Tüm kullanıcıları getir", description = "Veri tabanındaki tüm kullanıcıları getirir.")
     @GetMapping
-    public ResponseEntity<List<User>> getUsers() {
-        List<User> users = userService.getALlUsers();
+    public ResponseEntity<List<UserResponseDTO>> getUsers() {
+        List<UserResponseDTO> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
     @Operation(summary = "Yeni kullanıcı kaydet.", description = "Veri tabanına yeni kullanıcı kaydeder.")
     @PostMapping
-    public ResponseEntity<String> registerNewUser(@Valid @RequestBody User user) {
-        try {
-            userService.addNewUser(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+    public ResponseEntity<String> registerNewUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
+        userService.addNewUser(userRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
     }
 
     @Operation(summary = "Bir kullanıcıyı sil.", description = "Veri tabanındaki id'si girilen kullanıcıyı siler.")
-    @DeleteMapping("{userId}")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
-        try {
-            userService.deleteUser(userId);
-            return ResponseEntity.ok("User deleted successfully");
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        userService.deleteUser(userId);
+        return ResponseEntity.ok("User deleted successfully");
     }
 
     @Operation(summary = "Bir kullanıcıyı düzenle.", description = "Veri tabanındaki id'si girilen kullanıcıyı günceller.")
-    @PutMapping("{userId}")
+    @PutMapping("/{userId}")
     public ResponseEntity<String> updateUser(
             @PathVariable Long userId,
-            @Valid @RequestBody UserDTO userDTO
+            @Valid @RequestBody UserRequestDTO userRequestDTO
     ) {
-        try {
-            userService.updateUser(userId, userDTO);
-            return ResponseEntity.ok("User updated successfully");
-        } catch (CustomException e) {
-            throw new CustomException(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+        userService.updateUser(userId, userRequestDTO);
+        return ResponseEntity.ok("User updated successfully");
+    }
+
+    @Operation(summary = "Bir kullanıcıyı getir.", description = "Veri tabanındaki id'si girilen kullanıcıyı getirir.")
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long userId) {
+        UserResponseDTO userResponseDTO = userService.getUserById(userId);
+        return ResponseEntity.ok(userResponseDTO);
     }
 }
